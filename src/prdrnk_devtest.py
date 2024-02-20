@@ -265,7 +265,6 @@ def predirank_devtest() :
     file_data_list = GetCsvDataList()
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
     data_location = "../"
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,6 +277,10 @@ def predirank_devtest() :
     test_fraction = 0.5
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    array_limit_row_max = 25
+    array_limit_row_min = 12
+
+    # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     data_process_mode = 'numeric'
 
@@ -288,7 +291,7 @@ def predirank_devtest() :
 
     ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, 
                                     iter_no, random_seed, test_fraction, 
-                                    data_process_mode)
+                                    data_process_mode, array_limit_row_max, array_limit_row_min)
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     data_process_mode = 'categ_sim_a'
@@ -300,7 +303,7 @@ def predirank_devtest() :
 
     ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, 
                                     iter_no, random_seed, test_fraction, 
-                                    data_process_mode)
+                                    data_process_mode, array_limit_row_max, array_limit_row_min)
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     data_process_mode = 'categ_sim_b'
@@ -312,7 +315,7 @@ def predirank_devtest() :
 
     ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, 
                                     iter_no, random_seed, test_fraction, 
-                                    data_process_mode)
+                                    data_process_mode, array_limit_row_max, array_limit_row_min)
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     print()

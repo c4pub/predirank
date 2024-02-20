@@ -62,13 +62,13 @@ class C4pUseCommon :
     @staticmethod
     def SepLine1 ( display_flag = True ) :
         separator_string = ">-" + 78*"-"
-        iprnt ( separator_string )
+        print ( separator_string )
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
     def SepLine2 ( display_flag = True ) :
         separator_string = 80*"-"
-        iprnt ( separator_string )
+        print ( separator_string )
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
@@ -992,7 +992,6 @@ class RandPredictor:
 
 iprnt = C4pUseCommon.iprnt
 
-
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def RowListDisplay(in_row_list) :
@@ -1040,7 +1039,6 @@ def IsRowSimilarCompare(in_head_row, in_first_row) :
                     else :
                         similar_flag = False
                         break
-        # print("metmp - similar_flag:", similar_flag)
         fn_ret_data = similar_flag
     return fn_ret_data
 
@@ -1244,16 +1242,13 @@ def CvsExtractData(in_csv_data, in_targ_idx = -1, aux_data = None, display_flag 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def SelectiveOneHotProc(in_vector, in_top_no) :
 
-    # print("metmp - SelectiveOneHotProc")
     fn_ret_data = []
     # one iteration loop to allow unified return through loop breaks
     for dummy_idx in range(1) :
 
-        # print("metmp - in_vector[:20]:", in_vector[:20])
         vect_len = len(in_vector)
         ret_tuple = C4pSetMisc.SummaryFreqCount(in_vector)
         crt_types_no, crt_id_list, crt_count_list = ret_tuple
-        # print("metmp - ret_tuple:", ret_tuple)
         label_no = min(crt_types_no - 1, in_top_no)
         if label_no == 0 :
             one_hot_list = [[0] * vect_len]
@@ -1261,22 +1256,17 @@ def SelectiveOneHotProc(in_vector, in_top_no) :
             one_hot_list = []
             for crt_label_idx in range(label_no) :
                 one_hot_list.append([])
-            # print("metmp - one_hot_list:", one_hot_list)
             
             for crt_idx in range(vect_len) :
                 crt_elem = in_vector[crt_idx]
-                # print("metmp - crt_elem:", crt_elem)
                 for crt_label_idx in range(label_no) :
                     crt_label_id = crt_id_list[crt_label_idx]
-                    # print("metmp - crt_label_id:", crt_label_id)
                     if crt_elem == crt_label_id :
                         append_elem = 1
                     else :
                         append_elem = 0
                     one_hot_list[crt_label_idx].append(append_elem)
-                    # print("metmp - one_hot_list:", one_hot_list)
         fn_ret_data = one_hot_list
-        # print("metmp - one_hot_list[0][:20]:", one_hot_list[0][:20])
     return fn_ret_data
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1391,14 +1381,11 @@ def GetConvertMixToNumTbl(in_list_tbl, in_onehot_col) :
 def RetrieveCsvTbl(in_csv, in_head_first = None) :
 
     # input is a url or file path
-    # print("metmp - in_csv:", in_csv)
     ret_status, list_csv, ret_msg = C4pTblUtil.ImportCsvTbl(in_csv)
 
-    # print("metmp - list_csv:", list_csv)
     tbl_csv = RegularizeListTbl(list_csv)
     list_reg_csv = C4pTblUtil.CsvTblPrep(tbl_csv)
 
-    # print("metmp - in_head_first:", in_head_first)
     if in_head_first == None :
         sel_head_row = list_reg_csv[0]
         sel_next_row = list_reg_csv[1]
@@ -1409,7 +1396,6 @@ def RetrieveCsvTbl(in_csv, in_head_first = None) :
             head_start_row = 1
     else :
         head_start_row = in_head_first
-    # print("metmp - head_start_row:", head_start_row)
     list_csv = list_reg_csv[head_start_row:]
     
     return list_csv, head_start_row
@@ -1421,11 +1407,8 @@ def TblTargetExtract(in_csv_tbl, in_targ_idx = None) :
         in_targ_idx = -1
     list_csv = in_csv_tbl[:]
 
-    # print("metmp - list_csv:", list_csv)
     tbl_csv = RegularizeListTbl(list_csv)
-    # print("metmp - tbl_csv:", tbl_csv)
     list_csv = C4pTblUtil.CsvTblPrep(tbl_csv)
-    # print("metmp - list_csv:", list_csv)
     targ_col, attr_tbl = ExtractColFromTbl(list_csv, in_targ_idx)
     return targ_col, attr_tbl
 
@@ -1443,18 +1426,7 @@ def TransformTblOneHotEncoding(in_data_tbl, in_max_onehot = None) :
     else :
         tbl_data = in_data_tbl[:]
 
-    # print("metmp - tbl_data[0]:", tbl_data[0])
-
-    # targ_np_col = np.array(targ_col)
-    # train_np_tbl = np.array(tbl_data)
-    # print("metmp - train_np_tbl:", train_np_tbl)
-
-    # onehot_tbl, insert_list = GetConvertMixToNumTbl(train_np_tbl, in_max_onehot)
     onehot_tbl, insert_list = GetConvertMixToNumTbl(tbl_data, in_max_onehot)
-    # print("metmp - onehot_tbl:", onehot_tbl)
-    # onehot_np_tbl = np.array(onehot_tbl)
-
-    # return onehot_np_tbl, insert_list
     return onehot_tbl, insert_list
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1471,15 +1443,11 @@ def TransformTblDataSizeLimit(in_data_attr, in_data_targ, in_data_limit_row_max 
         if attr_no_row < in_data_limit_row_min : 
             # dataset is too small, multiply it
             augment_factor = int((in_data_limit_row_min * 1.0) / attr_no_row) + 1
-            # print("metmp - augment_factor:", augment_factor)
             augment_data_attr = crt_data_attr * augment_factor
             augment_targ_attr = crt_data_targ * augment_factor
             crt_data_attr = augment_data_attr[:]
             crt_data_targ = augment_targ_attr[:]
             attr_no_row *= augment_factor
-
-    # attr_elem_no = attr_no_row * attr_no_col
-    # print("metmp - attr_elem_no:", attr_elem_no)
 
     if in_data_limit_row_max > 0 :
         if attr_no_row > in_data_limit_row_min : 
@@ -1487,11 +1455,9 @@ def TransformTblDataSizeLimit(in_data_attr, in_data_targ, in_data_limit_row_max 
                 # need to reduce the data set
                 # in_rand_seed = 42
                 reduction_ratio = in_data_limit_row_max / (1.0 * attr_no_row)
-                # print("metmp - reduction_ratio:", reduction_ratio)
                 reduced_row_no = int(reduction_ratio * attr_no_row)
                 if ( reduced_row_no > in_data_limit_row_min
                      and reduced_row_no < attr_no_row ) :
-                    # print("metmp - reduced_row_no:", reduced_row_no)
                     new_attr_data = RandomShrinkNpTbl( crt_data_attr, reduced_row_no, in_rand_seed )
                     new_y_data = RandomShrinkNpTbl( crt_data_targ, reduced_row_no, in_rand_seed )
                     return new_attr_data, new_y_data
@@ -1525,26 +1491,20 @@ def BinDiscretize( in_num_v, in_qcut_bins ) :
     # import pandas as pd
     # import numpy as np
 
-    # print("metmp - in_qcut_bins:", in_qcut_bins)
     qcut_len = len( in_qcut_bins )
     if qcut_len == 1 :
-        # print("metmp - qcut_len:", qcut_len)
         num_len = len(in_num_v)
         ordinal_v = np.array(num_len * [0])
 
     elif qcut_len == 2 :
-        # print("metmp - qcut_len:", qcut_len)
         adj_bins = in_qcut_bins
         adj_bins[0] = -np.inf
         adj_bins = np.concatenate((adj_bins, [np.inf]))
-        # print("metmp - adj_bins:", adj_bins)
         ordinal_v = pd.cut( in_num_v, bins=adj_bins, labels=False, include_lowest=True, duplicates='drop')
     else :
-        # print("metmp - qcut_len:", qcut_len)
         adj_bins = in_qcut_bins
         adj_bins[0] = -np.inf
         adj_bins[-1] = np.inf
-        # print("metmp - adj_bins:", adj_bins)
         ordinal_v = pd.cut( in_num_v, bins=adj_bins, labels=False, include_lowest=True, duplicates='drop')
     return(ordinal_v)
 
@@ -1559,9 +1519,7 @@ def DiscretizeVect( in_num_v, in_bin_no ) :
     # import numpy as np
 
     pd_qcut = GetQcutBin(in_num_v, in_bin_no)
-    # print("metmp - pd_qcut[1]:", pd_qcut[1])
     discretized_v = BinDiscretize(in_num_v, pd_qcut[1])
-    # print("metmp - discretized_v:", discretized_v)
     return(discretized_v)
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1571,25 +1529,14 @@ def TransformTblDiscretize( in_tbl_data, in_bin_no ) :
     """
         Return bin discretized numerical vector
     """
-    # import pandas as pd
-    # import numpy as np
-    # print("metmp - TransformTblDiscretize")
 
     if ( in_bin_no == None or in_bin_no == 0 ) :
         return in_tbl_data
-    # print("metmp - in_tbl_data:", in_tbl_data)
-    # print("metmp - type(in_tbl_data):", type(in_tbl_data))
-    # print("metmp - type(in_tbl_data[0]):", type(in_tbl_data[0]))
-    # row_no = len(in_tbl_data)
-    # col_no = len(in_tbl_data[0])
 
     num_arr_data = np.array(in_tbl_data)
-    # num_arr_data = in_tbl_data
 
     row_no, col_no = num_arr_data.shape
     data_digi_x = np.zeros((row_no, col_no))
-    # print("metmp - data_digi_x:", data_digi_x)
-    # print("metmp - data_digi_x[0:4]:", data_digi_x[0:4])
     for crt_idx in range(col_no) :
         crt_col = num_arr_data[:, crt_idx]
         digitized_col = DiscretizeVect(crt_col, in_bin_no)
@@ -1603,7 +1550,6 @@ def RandomShrinkNpTbl(in_np_data, in_reduced_no, in_random_seed = None) :
 
     out_data = []
     row_no = len(in_np_data)
-    # print("metmp - RandomShrinkNpTbl, row_no:", row_no)
     n_rows_to_remove = row_no - in_reduced_no
 
     if n_rows_to_remove > 0 :
@@ -1612,7 +1558,6 @@ def RandomShrinkNpTbl(in_np_data, in_reduced_no, in_random_seed = None) :
         indices_to_remove = list(np.random.choice(row_no, size=n_rows_to_remove, replace=False))
         indices_to_remove.sort(reverse=True)
         new_data = np.delete(in_np_data, indices_to_remove, axis=0)
-        # print("metmp - RandomShrinkNpTbl, new_data:", new_data)
         return new_data
     else :
         return in_np_data
@@ -1652,10 +1597,7 @@ def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_see
     begin_time_ref = datetime.datetime.now()
     crt_time_ref = datetime.datetime.now()
 
-    # print("metmp - x_data:", x_data[:10])
-    # print("metmp - y_target:", y_target[:10])
-
-    #disable_std_output = False
+    # disable_std_output = False
     disable_std_output = True
 
     cumulate_acc = 0
@@ -1682,15 +1624,9 @@ def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_see
         new_exception_flag = False
 
         try :
-            # # metmp - induce crash
-            # ddim = 40000 ; B = np.eye(ddim); t_shape = B.shape
-            # print("metmp - t_shape:", t_shape)
-
             classifier.fit(x_train, y_train)
             predictions = classifier.predict(x_test)
 
-            # print("metmp - y_test:", y_test)
-            # print("metmp - predictions:", predictions)
             accuracy = accuracy_score(y_test, predictions)
 
         except Exception as excerr:
@@ -1707,7 +1643,6 @@ def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_see
             print("    exception - classifier:", str(classifier))
             print("    exception - error:", exc_msg[:80])
 
-        # print("metmp - check 001 - it gets here !!")
         cumulate_acc += accuracy
         acc_list.append(accuracy)
 
@@ -1740,17 +1675,15 @@ def ExecClassifAccuracyTest(x_data, y_data, classifier_lst, iter_no = 1, random_
         crt_time = time.time()
         time_delta = crt_time - ref_time
         ref_time = crt_time
-        if display_flag: iprnt("- - - - - - - - time_delta:", time_delta)
+        if display_flag: print("- - - - - - - - time_delta:", time_delta)
         if display_flag: C4pUseCommon.flush()
 
         test_tbl.append( [accuracy, str(crt_exe_classif), extra_info] )
-    # print("metmp - check 002 - it gets here !!")
     return test_tbl
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def GetRankScore(in_unsorted_list, reverse_order = False) :
 
-    # print("metmp - in_unsorted_list:", in_unsorted_list)
     competitor_no = len(in_unsorted_list)
     if competitor_no == 1 :
         ret_rank_list = [0.5]
@@ -1760,9 +1693,7 @@ def GetRankScore(in_unsorted_list, reverse_order = False) :
         crt_elem = in_unsorted_list[crt_idx]
         zip_list.append([crt_elem, crt_idx])
 
-    # print("metmp - zip_list:", zip_list)
     sorted_list = sorted(zip_list, key=lambda row: row[0], reverse=reverse_order)
-    # print("metmp - sorted_list:", sorted_list)
     rank_idx_list = [None] * competitor_no
 
     equal_len = 1
@@ -1774,33 +1705,23 @@ def GetRankScore(in_unsorted_list, reverse_order = False) :
         else :
             next_elem = sorted_list[crt_idx+1]
 
-        # print("metmp - crt_idx:", crt_idx)
-        # print("metmp - crt_elem:", crt_elem)
-        # print("metmp - next_elem:", next_elem)
         if crt_elem[0] == next_elem[0] :
             equal_len += 1
             cumulate_rank += (crt_idx)
         else :
             if equal_len > 1 :
                 # identical run is broken
-                # equal_len += 1
-                # print("metmp - equal_len:", equal_len)
                 cumulate_rank += (crt_idx)
                 avg_rank = cumulate_rank/(equal_len*(competitor_no - 1.0))
-                # print("metmp - avg_rank:", avg_rank)
                 for crt_eq_idx in range(equal_len) :
                     update_idx = crt_idx - crt_eq_idx
                     rank_idx_list[update_idx] = [avg_rank, sorted_list[update_idx][1]]
-                    # print("metmp - 1 - update_idx:", update_idx)
             else :
                 update_idx = crt_idx
                 rank_idx_list[update_idx] = [update_idx/(competitor_no - 1.0), crt_elem[1]]
-                # print("metmp - 2 - update_idx:", update_idx)
             equal_len = 1
             cumulate_rank = 0
-        # print("metmp - cumulate_rank:", cumulate_rank)
 
-    # print("metmp - rank_idx_list:", rank_idx_list)
     # now generate simple rank list ordered as input
     ret_rank_list = [None] * competitor_no
     for crt_idx in range(competitor_no) :
@@ -1813,7 +1734,6 @@ def GetRankScore(in_unsorted_list, reverse_order = False) :
 def ScoreRankTbl(acc_class_iter_list, reverse_order = False) :
 
     acc_iter_class_list = C4pTblUtil.MatrixTranspose(acc_class_iter_list)
-    # print("metmp - acc_iter_class_list:", acc_iter_class_list)
     rank_iter_class_list = []
     for crt_row in acc_iter_class_list :
         crt_rank_score_list = GetRankScore(crt_row, reverse_order)
@@ -1821,10 +1741,8 @@ def ScoreRankTbl(acc_class_iter_list, reverse_order = False) :
         rank_iter_class_list.append(crt_rank_score_list)
     rank_class_iter_list = C4pTblUtil.MatrixTranspose(rank_iter_class_list)
 
-    # print("metmp - rank_class_iter_list:", rank_class_iter_list)
     rank_score_list = []
     for crt_row in rank_class_iter_list :
-        # print("metmp - crt_row[1]:", crt_row[1])
         crt_rank_avg = statistics.mean(crt_row)
         len_row = len(crt_row)
         if len_row > 1 :
@@ -1833,7 +1751,6 @@ def ScoreRankTbl(acc_class_iter_list, reverse_order = False) :
             crt_rank_std = 0
         rank_score_list.append([crt_rank_avg, crt_rank_std])
 
-    # print("metmp - rank_score_list:", rank_score_list)
     rank_class_list = rank_score_list
     return rank_class_list
 
@@ -1844,16 +1761,13 @@ def BatchClassifRankAccTest(x_data, y_data, classifier_lst, iter_no = 1, random_
     if display_flag: print("- - - - - - - - - - - - ")
     classif_tbl = ExecClassifAccuracyTest(x_data, y_data, classifier_lst, 
                                         iter_no, random_seed, test_fraction, display_flag)
-    # print("metmp - check 004 - it gets here !!")
     classif_no = len(classifier_lst)
     acc_class_iter_list = []
     for crt_row in classif_tbl :
         crt_extra_info = crt_row[2]
         acc_class_iter_list.append(crt_extra_info[1])
 
-    # print("metmp - acc_class_iter_list:", acc_class_iter_list)
     rank_class_list = ScoreRankTbl(acc_class_iter_list, reverse_order = False)    
-    # print("metmp - rank_class_list:", rank_class_list)
     if display_flag: print("- - - - - - - - - - - - ")
     test_tbl = []
     for crt_idx in range(classif_no) : 
@@ -1874,7 +1788,7 @@ def BatchClassifRankAccTest(x_data, y_data, classifier_lst, iter_no = 1, random_
 
     if display_flag: print("- - - - - - - - - - - - ")
     if display_flag: C4pUseCommon.CrtTimeStamp()
-    if display_flag: print()
+    if display_flag: iprnt()
     return test_tbl
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1907,20 +1821,22 @@ def TblSampleDisplay(table_list, display_flag = True) :
             if (2*display_sample_col < data_no_col) :
                 str_begin = str(crt_row[:display_sample_col])
                 str_end = str(crt_row[-display_sample_col:])
-                if display_flag: iprnt("    " + str_begin + " ... " + str_end)
+                if display_flag: print("    " + str_begin + " ... " + str_end)
             else :
                 str_print = str(crt_row)
-                if display_flag: iprnt("    " + str_print)
+                if display_flag: print("    " + str_print)
         else :
             if not dot_flag :
-                if display_flag: iprnt("    ...")
+                if display_flag: print("    ...")
                 dot_flag = True
     return
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no = 3, random_seed = 42, 
-                            test_fraction = 0.5, data_process_mode = 'numeric', display_flag = True) :
+def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no = 3, 
+                            random_seed = 42, test_fraction = 0.5, data_process_mode = 'numeric',
+                            array_limit_row_max = 10000, array_limit_row_min = 12, 
+                            display_flag = True) :
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1943,23 +1859,18 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     random.seed(random_seed)
 
-    if display_flag: iprnt("- - - - - - - - - ")
-    if display_flag: iprnt("- - - - - - - - - ")
-    if display_flag: iprnt("- - BatchCsvAccuracyTest")
-    if display_flag: iprnt("- - - - - - - - - ")
-    if display_flag: iprnt("- - - - batch average accuracy test")
-    if display_flag: iprnt()
-    if display_flag: iprnt("- - - - iter_no:", iter_no)
-    if display_flag: iprnt("- - - - random_seed:", random_seed)
-    if display_flag: iprnt("- - - - test_fraction:", test_fraction)
-    if display_flag: iprnt("- - - - data_process_mode:", data_process_mode)
-    if display_flag: iprnt()
+    if display_flag: print("- - - - - - - - - ")
+    if display_flag: print("- - - - - - - - - ")
+    if display_flag: print("- - BatchCsvAccuracyTest")
+    if display_flag: print("- - - - - - - - - ")
+    if display_flag: print("- - - - batch average accuracy test")
+    if display_flag: print()
+    if display_flag: print("- - - - iter_no:", iter_no)
+    if display_flag: print("- - - - random_seed:", random_seed)
+    if display_flag: print("- - - - test_fraction:", test_fraction)
+    if display_flag: print("- - - - data_process_mode:", data_process_mode)
+    if display_flag: print()
 
-    array_limit_row_min = 12
-    # array_limit_row_max = 0                         # no limit
-    # array_limit_row_max = 30000                     # same as no limit
-    # array_limit_row_max = 15000
-    array_limit_row_max = 100
 
     if display_flag: print("- - - - - - array_limit_row_max:", array_limit_row_max)
     if display_flag: print("- - - - - - array_limit_row_min:", array_limit_row_min)
@@ -1967,27 +1878,27 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
 
     agg_dataset_tbl = []
     classif_no = len(classifier_lst)
-    if display_flag: iprnt("- - - - - - - - - ")
-    if display_flag: iprnt("- - - classifier no:", classif_no)
-    if display_flag: iprnt("")
+    if display_flag: print("- - - - - - - - - ")
+    if display_flag: print("- - - classifier no:", classif_no)
+    if display_flag: print("")
     if display_flag: RowListDisplay(classifier_lst)
-    if display_flag: iprnt("")
+    if display_flag: print("")
 
     for crt_idx in range(classif_no) :
         crt_classif = classifier_lst[crt_idx]
         agg_dataset_tbl.append([[], [], 0, crt_classif])
 
     dataset_no = len(data_set_lst)
-    if display_flag: iprnt("- - - - - - - - - ")
-    if display_flag: iprnt("- - - dataset_no:", dataset_no)
-    if display_flag: iprnt("")
+    if display_flag: print("- - - - - - - - - ")
+    if display_flag: print("- - - dataset_no:", dataset_no)
+    if display_flag: print("")
     if display_flag: RowListDisplay(data_set_lst)
 
     for crt_idx in range(dataset_no) : 
         crt_data_set = data_set_lst[crt_idx]
         desc_name = crt_data_set[0]
-        if display_flag: iprnt("- - - - - - - - - ")
-        if display_flag: iprnt("- - - - dataset:", desc_name)
+        if display_flag: print("- - - - - - - - - ")
+        if display_flag: print("- - - - dataset:", desc_name)
 
         default_entry_list = [crt_data_set[0], -1, None, None]
         entry_param_list = FillMissing( default_entry_list, crt_data_set)
@@ -2007,27 +1918,21 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         input_no_row = len(input_train_data)
         input_no_col = len(input_train_data[0])
 
-        if display_flag: iprnt("- - - - - - - - - ")
+        if display_flag: print("- - - - - - - - - ")
         if display_flag: print("- - - data processing - retrieved csv")
-        if display_flag: iprnt("- - - - - - input_no_row:", input_no_row)
-        if display_flag: iprnt("- - - - - - input_no_col:", input_no_col)
-        if display_flag: iprnt("- - - - - - input_targ_idx:", input_targ_idx)
-        if display_flag: iprnt("- - - - - - insput_start_row:", insput_start_row)
-        if display_flag: iprnt("- - - - - - - - - ")
-
-        # print("metmp - type(input_train_data):", type(input_train_data))
-
-        # if display_flag: iprnt("- - - input_train_data:")
+        if display_flag: print("- - - - - - input_no_row:", input_no_row)
+        if display_flag: print("- - - - - - input_no_col:", input_no_col)
+        if display_flag: print("- - - - - - input_targ_idx:", input_targ_idx)
+        if display_flag: print("- - - - - - insput_start_row:", insput_start_row)
+        if display_flag: print("- - - - - - - - - ")
 
         if display_flag: print("- - - data sample:")
         TblSampleDisplay(input_train_data, display_flag)
        
-        if display_flag: iprnt("- - - - - - - - - ")
-        if display_flag: iprnt()
+        if display_flag: print("- - - - - - - - - ")
+        if display_flag: print()
 
         input_elem_no = input_no_row * input_no_col
-        # print("metmp - input_elem_no:", input_elem_no)
-        # print("metmp - array_limit_row_max:", array_limit_row_max)
 
         # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         ret_data = TblTargetExtract(
@@ -2036,8 +1941,6 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
                                    )
         y_target, attr_data_tbl = ret_data
         if display_flag: print("- - - data processing - target extracted")
-
-        # print("metmp - type(y_target):", type(y_target))
 
         # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         ret_data = TransformTblOneHotEncoding(
@@ -2050,14 +1953,14 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         proc_no_col = len(proc_train_data[0])
 
         if not proc_no_row == input_no_row :
-            if display_flag: iprnt(" Error - inconsistent processing")
+            if display_flag: print(" Error - inconsistent processing")
             return None
 
         if display_flag: print("- - - data processing - one-hot encoded")
         if display_flag: print("- - - - - - proc_no_row:", proc_no_row)
         if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
 
-        # if display_flag: iprnt("- - - proc_train_data:")
+        # if display_flag: print("- - - proc_train_data:")
 
         # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         ret_data = TransformTblDataSizeLimit(proc_train_data, y_target, array_limit_row_max, array_limit_row_min)
@@ -2076,9 +1979,6 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             if display_flag: print("- - - data reduced")
         else :
             if display_flag: print("- - - data augmented")
-
-        # print("metmp - type(proc_train_data):", type(proc_train_data))
-        # print("metmp - type(y_target):", type(y_target))
 
         # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         if data_process_mode == 'categ_sim_a' :
@@ -2149,7 +2049,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-        if display_flag: iprnt()
+        if display_flag: print()
         if display_flag: C4pUseCommon.SepLine2()
 
         test_tbl = BatchClassifRankAccTest(proc_train_data, 
@@ -2175,10 +2075,10 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         print_tab_dist = [20, 7, 20, 5]
 
         if display_flag: C4pUseCommon.SepLine2()
-        if display_flag: iprnt("- - - - dataset name:", desc_name)
-        if display_flag: iprnt("")
+        if display_flag: print("- - - - dataset name:", desc_name)
+        if display_flag: print("")
         line_str = C4pUseCommon.ListToTabStr(["rank score avg", "stdev", "accuracy avg", "xpt", "classifier"], print_tab_dist)
-        if display_flag: iprnt(line_str)
+        if display_flag: print(line_str)
         if display_flag: C4pUseCommon.SepLine2()
         for crt_entry in rank_classif :
             row_avg_rank = crt_entry[0]
@@ -2188,11 +2088,9 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             row_classif = crt_entry[3]
             # line_str = C4pUseCommon.ListToTabStr([crt_entry[0], crt_entry[1], crt_entry[3][0], crt_entry[2]], print_tab_dist)
             line_str = C4pUseCommon.ListToTabStr([row_avg_rank, row_std_rank, row_avg_acc, row_except, row_classif], print_tab_dist)
-            if display_flag: iprnt(line_str)
+            if display_flag: print(line_str)
         if display_flag: C4pUseCommon.SepLine2()
-        if display_flag: iprnt()
-
-    # print("metmp - agg_dataset_tbl:", agg_dataset_tbl)
+        if display_flag: print()
 
     unsorted_rank_list =[]
     for crt_idx in range(classif_no) :
@@ -2212,21 +2110,19 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             agg_acc_stdev = 0
         unsorted_rank_list.append([agg_rank_avg, agg_rank_stdev, agg_acc_avg, agg_acc_stdev, row_except, row_classif])
 
-    # print("metmp - unsorted_rank_list:", unsorted_rank_list)
-
-    if display_flag: iprnt("- - - - - - - - - ")
-    if display_flag: iprnt()
+    if display_flag: print("- - - - - - - - - ")
+    if display_flag: print()
     # agg_rank_classif = reversed(sorted(unsorted_rank_list, key=lambda row: row[0]))
     agg_rank_classif = sorted(unsorted_rank_list, key=lambda row: row[0])
     agg_rank_classif.reverse()
 
     # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt("- - - - aggregate accuracy")
-    if display_flag: iprnt("")
+    if display_flag: print("- - - - aggregate accuracy")
+    if display_flag: print("")
     print_tab_dist = [4, 20, 10, 8]
     line_str = C4pUseCommon.ListToTabStr(["no", "accuracy avg", "stddev", "excpt", "classifier"], print_tab_dist)
-    if display_flag: iprnt(line_str)
+    if display_flag: print(line_str)
     if display_flag: C4pUseCommon.SepLine2()
 
     agg_value_list = []
@@ -2243,11 +2139,11 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         row_except = crt_entry[4]
         row_classif = crt_entry[5]
         line_str = C4pUseCommon.ListToTabStr([(crt_idx+1), row_avg_acc, row_std_acc, row_except, row_classif], print_tab_dist)
-        if display_flag: iprnt(line_str)
+        if display_flag: print(line_str)
         agg_value_list.append(row_avg_acc)
         agg_stdev_list.append(row_std_acc)
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt()
+    if display_flag: print()
 
     if agg_rank_no > 0 :
         avg_value = statistics.mean(agg_value_list)
@@ -2256,19 +2152,19 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         avg_value = 0
         avg_stdev = 0
 
-    if display_flag: iprnt("    avg_value:", avg_value)
-    if display_flag: iprnt("    avg_stdev:", avg_stdev)
-    if display_flag: iprnt()
+    if display_flag: print("    avg_value:", avg_value)
+    if display_flag: print("    avg_stdev:", avg_stdev)
+    if display_flag: print()
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt()
+    if display_flag: print()
 
     # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt("- - - - aggregate rank score")
-    if display_flag: iprnt("")
+    if display_flag: print("- - - - aggregate rank score")
+    if display_flag: print("")
     print_tab_dist = [4, 20, 10, 8]
     line_str = C4pUseCommon.ListToTabStr(["no", "rank aggregate avg", "stddev", "excpt", "classifier"], print_tab_dist)
-    if display_flag: iprnt(line_str)
+    if display_flag: print(line_str)
     if display_flag: C4pUseCommon.SepLine2()
 
     agg_value_list = []
@@ -2285,11 +2181,11 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         row_except = crt_entry[4]
         row_classif = crt_entry[5]
         line_str = C4pUseCommon.ListToTabStr([(crt_idx+1), row_avg_rank, row_std_rank, row_except, row_classif], print_tab_dist)
-        if display_flag: iprnt(line_str)
+        if display_flag: print(line_str)
         agg_value_list.append(row_avg_rank)
         agg_stdev_list.append(row_std_rank)
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt()
+    if display_flag: print()
 
     if agg_rank_no > 0 :
         avg_value = statistics.mean(agg_value_list)
@@ -2298,15 +2194,15 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         avg_value = 0
         avg_stdev = 0
 
-    if display_flag: iprnt("    avg_value:", avg_value)
-    if display_flag: iprnt("    avg_stdev:", avg_stdev)
-    if display_flag: iprnt()
+    if display_flag: print("    avg_value:", avg_value)
+    if display_flag: print("    avg_stdev:", avg_stdev)
+    if display_flag: print()
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt()
+    if display_flag: print()
 
     # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     if display_flag: C4pUseCommon.SepLine2()
-    if display_flag: iprnt()
+    if display_flag: print()
 
     #""" # comment - end
     return rank_classif

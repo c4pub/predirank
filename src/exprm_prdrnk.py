@@ -206,7 +206,7 @@ class C4setExprmnt :
         """
         if C4setExprmnt.sysDebug > 3.107 :
             C4setExprmnt.SysLogMsg("trace")
-            print ("cadbg2 - param, in_tag_name", in_tag_name)
+            print ("medbg2 - param, in_tag_name", in_tag_name)
 
         # enabling_flag, general_start = C4setExprmnt.Misc.SysProfileGetStatus()
         enabling_flag = C4setExprmnt.globalDef['profiling']['enable']
@@ -240,7 +240,7 @@ class C4setExprmnt :
         """
         if C4setExprmnt.sysDebug > 3.107 :
             C4setExprmnt.SysLogMsg("trace")
-            print ("cadbg2 - param, in_tag_name", in_tag_name)
+            print ("medbg2 - param, in_tag_name", in_tag_name)
 
         # enabling_flag, general_start = C4setExprmnt.Misc.SysProfileGetStatus()
         enabling_flag = C4setExprmnt.globalDef['profiling']['enable']
@@ -269,7 +269,7 @@ class C4setExprmnt :
         """
         if C4setExprmnt.sysDebug > 3.107 :
             C4setExprmnt.SysLogMsg("trace")
-            print ("cadbg2 - param, in_tag_name", in_tag_name)
+            print ("medbg2 - param, in_tag_name", in_tag_name)
 
         enabling_flag = C4setExprmnt.globalDef['profiling']['enable']
         general_start = C4setExprmnt.globalDef['profiling']['general_start']
@@ -288,7 +288,7 @@ class C4setExprmnt :
         """
         if C4setExprmnt.sysDebug > 3.107 :
             C4setExprmnt.SysLogMsg("trace")
-            print ("cadbg2 - param, in_tag_name", in_tag_name)
+            print ("medbg2 - param, in_tag_name", in_tag_name)
 
         import time
         crt_time = time.time()
@@ -319,7 +319,7 @@ class C4setExprmnt :
 
         if C4setExprmnt.sysDebug > 3.107 :
             C4setExprmnt.SysLogMsg("trace")
-            print ("cadbg2 - param, display_flag", display_flag)
+            print ("medbg2 - param, display_flag", display_flag)
 
         import time
         crt_time = time.time()
@@ -340,16 +340,16 @@ class C4setExprmnt :
 
             crt_str = C4setExprmnt.SysSep()
             out_str_buf.append(crt_str)
-            if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+            if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             crt_str = str( "  Profiling stats" % () )
             out_str_buf.append(crt_str)
-            if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+            if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             table_separator = str( "    %s" % (50*'-') )
             crt_str = table_separator
             out_str_buf.append(crt_str)
-            if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+            if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             profile_keylist = list(profile_dict['tags'].keys())
             print("experiment - profile_keylist:", profile_keylist)
@@ -368,19 +368,19 @@ class C4setExprmnt :
                 # crt_str = str( "    cumulate:  %-11.7f  ratio:  %-11.7f %%  tag: %s" % ( crt_cumulate, crt_ratio, crt_profile_key ) )
                 crt_str = str( "    cumulate:  %-15.7f  ratio:  %-11.7f %%  tag: %s" % ( crt_cumulate, crt_ratio, crt_profile_key ) )
                 out_str_buf.append(crt_str)
-                if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+                if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             crt_str = table_separator
             out_str_buf.append(crt_str)
-            if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+            if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             crt_str = str( "    general cumulate: %f" % ( gen_elapsed ) )
             out_str_buf.append(crt_str)
-            if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+            if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             crt_str = C4setExprmnt.SysSep()
             out_str_buf.append(crt_str)
-            if C4setExprmnt.sysDebug > 5.014585 : print ("cadbg5 - SysProfileStats, str: %s" % (crt_str))
+            if C4setExprmnt.sysDebug > 5.014585 : print ("medbg5 - SysProfileStats, str: %s" % (crt_str))
 
             if display_flag :
                 for crt_row in out_str_buf :
