@@ -86,7 +86,7 @@ def GetClassifierListExtra() :
     # import sklearn.neighbors
 
     classifier_lst = [  
-                        # sklearn.neighbors.KNeighborsClassifier(),
+                        # sklearn.neighbors.KNeighborsClassifier(n_neighbors=1),
                         # deodel.DeodataDelangaClassifier(),
                         # deodel2.DeodelSecond(),
                         predirank.RandPredictor({'rand_seed': 42}),

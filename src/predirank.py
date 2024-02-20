@@ -476,78 +476,6 @@ class C4pTblUtil :
         return fn_ret_tuple
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    @staticmethod
-    def CheckIsUrl(in_url) :
-        import validators
-        url_flag = validators.url(in_url)
-        if not url_flag == True :
-            return False
-        else :
-            return True
-
-    # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    @staticmethod
-    def GetUrlCsv(in_csv_url) :
-        import csv
-        import urllib.request
-        from io import StringIO
-
-        fn_ret_status = False
-        fn_ret_data = None
-        fn_ret_msg = ""
-
-        # one iteration loop to allow unified return through loop breaks
-        for dummy_idx in range(1) :
-            url_flag = C4pTblUtil.CheckIsUrl(in_csv_url)
-            if not url_flag == True :
-                fn_ret_msg = "Error: invalid url"
-                break
-            try :
-                response_html = urllib.request.urlopen(in_csv_url)
-                response_body = response_html.read()
-            except IOError :
-                fn_ret_msg = "Error: failed urlopen"
-                break
-            else :
-                response_str = response_body.decode()
-                buff_d = StringIO(response_str)
-                csv_read = csv.reader(buff_d)
-                fn_ret_status = True
-                fn_ret_data = csv_read
-
-        fn_ret_tuple = (fn_ret_status, fn_ret_data, fn_ret_msg)
-        return fn_ret_tuple
-
-    # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    @staticmethod
-    def GetUrlCsv(in_csv_url) :
-        import csv
-        import urllib.request
-        from io import StringIO
-
-        fn_ret_status = False
-        fn_ret_data = None
-        fn_ret_msg = ""
-
-        # one iteration loop to allow unified return through loop breaks
-        for dummy_idx in range(1) :
-            try :
-                response_html = urllib.request.urlopen(in_csv_url)
-                response_body = response_html.read()
-            except IOError :
-                fn_ret_msg = "Error: failed urlopen"
-                break
-            else :
-                response_str = response_body.decode()
-                buff_d = StringIO(response_str)
-                csv_read = csv.reader(buff_d)
-                fn_ret_status = True
-                fn_ret_data = csv_read
-
-        fn_ret_tuple = (fn_ret_status, fn_ret_data, fn_ret_msg)
-        return fn_ret_tuple
-
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
     def ImportCsvTbl(in_csv_path) :
@@ -558,21 +486,12 @@ class C4pTblUtil :
         # one iteration loop to allow unified return through loop breaks
         for dummy_idx in range(1) :
             csv_read = None
-            ret_status = C4pTblUtil.CheckIsUrl(in_csv_path)
+            ret_info = C4pTblUtil.GetFileCsv(in_csv_path)
+            ret_status, ret_data, ret_msg = ret_info
             if ret_status :
-                ret_info = C4pTblUtil.GetUrlCsv(in_csv_path)
-                ret_status, ret_data, ret_msg = ret_info
-                if ret_status :
-                    csv_read = ret_data
-                else :
-                    fn_ret_msg = ret_msg
+                csv_read = ret_data
             else :
-                ret_info = C4pTblUtil.GetFileCsv(in_csv_path)
-                ret_status, ret_data, ret_msg = ret_info
-                if ret_status :
-                    csv_read = ret_data
-                else :
-                    fn_ret_msg = ret_msg
+                fn_ret_msg = ret_msg
             if csv_read == None :
                 pass
             else :
