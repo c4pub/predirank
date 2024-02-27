@@ -1505,7 +1505,7 @@ def TransformTblTranslateElem( in_tbl_data, in_transl_dict = None) :
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_seed = None, test_fraction = 0.5) :
+def AvgAccuracyDataTest(in_train_data, in_target_data, classif_entry, iterations = 1, random_seed = None, test_fraction = 0.5) :
 
     import sys
     import io
@@ -1516,8 +1516,17 @@ def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_see
     begin_time_ref = datetime.datetime.now()
     crt_time_ref = datetime.datetime.now()
 
-    # disable_std_output = False
-    disable_std_output = True
+    if classif_entry[1] == None :
+        classif_id = str(classif_entry[0])
+    else :
+        classif_id = classif_entry[1]
+    classifier = classif_entry[0]
+
+    disable_std_output = False
+    # disable_std_output = True
+
+    x_data = np.array(in_train_data)
+    y_target = in_target_data
 
     cumulate_acc = 0
     excpt_count = 0
@@ -1543,15 +1552,17 @@ def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_see
         new_exception_flag = False
 
         try :
+            accuracy = -1
             classifier.fit(x_train, y_train)
             predictions = classifier.predict(x_test)
-
             accuracy = accuracy_score(y_test, predictions)
 
         except Exception as excerr:
             excpt_count += 1
-            accuracy = 0.0
+            if accuracy == -1 :
+                accuracy = 0.0
             new_exception_flag = True
+            exc_type = str(type(excerr))
             exc_msg = str(excerr)
 
         if disable_std_output :
@@ -1559,8 +1570,8 @@ def AvgAccuracyDataTest(x_data, y_target, classifier, iterations = 1, random_see
             sys.stderr = save_stderr
 
         if new_exception_flag :
-            print("    exception - classifier:", str(classifier))
-            print("    exception - error:", exc_msg[:80])
+            print("    exception - classif_id:", classif_id)
+            print("        type: %s, err: %s" % (exc_type[:20], exc_msg[:60]))
 
         cumulate_acc += accuracy
         acc_list.append(accuracy)
@@ -1585,9 +1596,13 @@ def ExecClassifAccuracyTest(x_data, y_data, classifier_lst, iter_no = 1, random_
     ref_time = time.time()
     test_tbl = []
 
-    for crt_exe_classif in classifier_lst : 
-        if display_flag: print("- - - - crt_exe_classif:", crt_exe_classif)
-        accuracy, std_dev, extra_info, duration = AvgAccuracyDataTest(x_data, y_data, crt_exe_classif, iterations=iter_no, random_seed=random_seed, test_fraction=test_fraction)
+    for crt_classif_entry in classifier_lst : 
+        if crt_classif_entry[1] == None :
+            classif_id = str(crt_classif_entry[0])
+        else :
+            classif_id = crt_classif_entry[1]
+        if display_flag: print("- - - - classif_id:", classif_id)
+        accuracy, std_dev, extra_info, duration = AvgAccuracyDataTest(x_data, y_data, crt_classif_entry, iterations=iter_no, random_seed=random_seed, test_fraction=test_fraction)
         if display_flag: print("- - - - - - - - accuracy:", accuracy)
         if display_flag: print("- - - - - - - - std_dev:", std_dev)
 
@@ -1597,7 +1612,7 @@ def ExecClassifAccuracyTest(x_data, y_data, classifier_lst, iter_no = 1, random_
         if display_flag: print("- - - - - - - - time_delta:", time_delta)
         if display_flag: C4pUseCommon.flush()
 
-        test_tbl.append( [accuracy, str(crt_exe_classif), extra_info] )
+        test_tbl.append( [accuracy, str(classif_id), extra_info] )
     return test_tbl
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1690,7 +1705,12 @@ def BatchClassifRankAccTest(x_data, y_data, classifier_lst, iter_no = 1, random_
     if display_flag: print("- - - - - - - - - - - - ")
     test_tbl = []
     for crt_idx in range(classif_no) : 
-        crt_classif = classifier_lst[crt_idx]
+        crt_classif_entry = classifier_lst[crt_idx]
+        if crt_classif_entry[1] == None :
+            classif_id = str(crt_classif_entry[0])
+        else :
+            classif_id = crt_classif_entry[1]
+        crt_classif = classif_id
         accuracy, extra_info, duration = classif_tbl[crt_idx][0], classif_tbl[crt_idx][2], classif_tbl[crt_idx][1]
         rank_score_avg = rank_class_list[crt_idx][0]
         rank_score_stdev = rank_class_list[crt_idx][1]
@@ -1804,7 +1824,12 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: print("")
 
     for crt_idx in range(classif_no) :
-        crt_classif = classifier_lst[crt_idx]
+        crt_classif_entry = classifier_lst[crt_idx]
+        if crt_classif_entry[1] == None :
+            classif_id = str(crt_classif_entry[0])
+        else :
+            classif_id = crt_classif_entry[1]
+        crt_classif = classif_id
         agg_dataset_tbl.append([[], [], 0, crt_classif])
 
     dataset_no = len(data_set_lst)

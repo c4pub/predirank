@@ -34,46 +34,46 @@ def GetSelClassifierListSk() :
     import sklearn.tree
 
     classifier_lst = [
-                        sklearn.calibration.CalibratedClassifierCV(),
-                        sklearn.discriminant_analysis.LinearDiscriminantAnalysis(),
-                        sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis(),
-                        sklearn.ensemble.AdaBoostClassifier(),
-                        sklearn.ensemble.BaggingClassifier(),
-                        sklearn.ensemble.ExtraTreesClassifier(),
-                        sklearn.ensemble.GradientBoostingClassifier(),
-                        sklearn.ensemble.HistGradientBoostingClassifier(),
-                        sklearn.ensemble.RandomForestClassifier(),
-                        # sklearn.ensemble.VotingClassifier(),
-                        sklearn.gaussian_process.GaussianProcessClassifier(),
-                        sklearn.linear_model.LogisticRegression(),
-                        sklearn.linear_model.LogisticRegressionCV(),
-                        sklearn.linear_model.PassiveAggressiveClassifier(),
-                        sklearn.linear_model.Perceptron(),
-                        sklearn.linear_model.RidgeClassifier(),
-                        sklearn.linear_model.RidgeClassifierCV(),
-                        sklearn.linear_model.SGDClassifier(),
-                        sklearn.mixture.BayesianGaussianMixture(),
-                        sklearn.mixture.GaussianMixture(),
-                        # sklearn.multiclass.OneVsOneClassifier(),
-                        # sklearn.multiclass.OneVsRestClassifier(),
-                        # sklearn.multiclass.OutputCodeClassifier(),
-                        # sklearn.multioutput.ClassifierChain(),
-                        # sklearn.multioutput.MultiOutputClassifier(),
-                        sklearn.naive_bayes.BernoulliNB(),
-                        sklearn.naive_bayes.GaussianNB(),
-                        sklearn.naive_bayes.MultinomialNB(),
-                        sklearn.neighbors.KNeighborsClassifier(),
-                        sklearn.neighbors.NearestCentroid(),
-                        sklearn.neighbors.RadiusNeighborsClassifier(),
-                        sklearn.neural_network.MLPClassifier(),
-                        sklearn.semi_supervised.LabelPropagation(),
-                        sklearn.semi_supervised.LabelSpreading(),
-                        sklearn.svm.LinearSVC(),
-                        sklearn.svm.NuSVC(),
-                        sklearn.svm.OneClassSVM(),
-                        sklearn.svm.SVC(),
-                        sklearn.tree.DecisionTreeClassifier(),
-                        sklearn.tree.ExtraTreeClassifier(),
+                        [sklearn.calibration.CalibratedClassifierCV(), None],
+                        [sklearn.discriminant_analysis.LinearDiscriminantAnalysis(), None],
+                        [sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis(), None],
+                        [sklearn.ensemble.AdaBoostClassifier(), None],
+                        [sklearn.ensemble.BaggingClassifier(), None],
+                        [sklearn.ensemble.ExtraTreesClassifier(), None],
+                        [sklearn.ensemble.GradientBoostingClassifier(), None],
+                        [sklearn.ensemble.HistGradientBoostingClassifier(), None],
+                        [sklearn.ensemble.RandomForestClassifier(), None],
+                        # [sklearn.ensemble.VotingClassifier(), None],
+                        [sklearn.gaussian_process.GaussianProcessClassifier(), None],
+                        [sklearn.linear_model.LogisticRegression(), None],
+                        [sklearn.linear_model.LogisticRegressionCV(), None],
+                        [sklearn.linear_model.PassiveAggressiveClassifier(), None],
+                        [sklearn.linear_model.Perceptron(), None],
+                        [sklearn.linear_model.RidgeClassifier(), None],
+                        [sklearn.linear_model.RidgeClassifierCV(), None],
+                        [sklearn.linear_model.SGDClassifier(), None],
+                        [sklearn.mixture.BayesianGaussianMixture(), None],
+                        [sklearn.mixture.GaussianMixture(), None],
+                        # [sklearn.multiclass.OneVsOneClassifier(), None],
+                        # [sklearn.multiclass.OneVsRestClassifier(), None],
+                        # [sklearn.multiclass.OutputCodeClassifier(), None],
+                        # [sklearn.multioutput.ClassifierChain(), None],
+                        # [sklearn.multioutput.MultiOutputClassifier(), None],
+                        [sklearn.naive_bayes.BernoulliNB(), None],
+                        [sklearn.naive_bayes.GaussianNB(), None],
+                        [sklearn.naive_bayes.MultinomialNB(), None],
+                        [sklearn.neighbors.KNeighborsClassifier(), None],
+                        [sklearn.neighbors.NearestCentroid(), None],
+                        [sklearn.neighbors.RadiusNeighborsClassifier(), None],
+                        [sklearn.neural_network.MLPClassifier(), None],
+                        [sklearn.semi_supervised.LabelPropagation(), None],
+                        [sklearn.semi_supervised.LabelSpreading(), None],
+                        [sklearn.svm.LinearSVC(), None],
+                        [sklearn.svm.NuSVC(), None],
+                        [sklearn.svm.OneClassSVM(), None],
+                        [sklearn.svm.SVC(), None],
+                        [sklearn.tree.DecisionTreeClassifier(), None],
+                        [sklearn.tree.ExtraTreeClassifier(), None],
                     ]
 
     return classifier_lst
@@ -86,10 +86,10 @@ def GetClassifierListExtra() :
     # import sklearn.neighbors
 
     classifier_lst = [  
-                        # sklearn.neighbors.KNeighborsClassifier(n_neighbors=1),
-                        # deodel.DeodataDelangaClassifier(),
-                        # deodel2.DeodelSecond(),
-                        predirank.RandPredictor({'rand_seed': 42}),
+                        # [sklearn.neighbors.KNeighborsClassifier(n_neighbors=1), None],
+                        # [deodel.DeodataDelangaClassifier(), None],
+                        # [deodel2.DeodelSecond(), None],
+                        [predirank.RandPredictor({'rand_seed': 42}), 'Random Baseline'],
     ]
     return classifier_lst
 
@@ -323,6 +323,16 @@ def predirank_devtest() :
     print("- - - End")
     print("- - - - - - - - - - - - - - - - - - ")
     print()
+
+    # import sys
+    import sklearn
+
+    print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
+    print("- - - - python version:", str(sys.version))
+    print("- - - - scikit-learn version:", str(sklearn.__version__))
+    print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
+    print()
+
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
