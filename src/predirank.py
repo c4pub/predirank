@@ -1522,10 +1522,11 @@ def AvgAccuracyDataTest(in_train_data, in_target_data, classif_entry, iterations
         classif_id = classif_entry[1]
     classifier = classif_entry[0]
 
-    disable_std_output = False
-    # disable_std_output = True
+    # disable_std_output = False
+    disable_std_output = True
 
-    x_data = np.array(in_train_data)
+    # x_data = np.array(in_train_data)
+    x_data = in_train_data
     y_target = in_target_data
 
     cumulate_acc = 0
@@ -1559,7 +1560,7 @@ def AvgAccuracyDataTest(in_train_data, in_target_data, classif_entry, iterations
 
         except Exception as excerr:
             excpt_count += 1
-            if accuracy == -1 :
+            if accuracy < 0 or accuracy > 1.0 :
                 accuracy = 0.0
             new_exception_flag = True
             exc_type = str(type(excerr))
@@ -1570,8 +1571,9 @@ def AvgAccuracyDataTest(in_train_data, in_target_data, classif_entry, iterations
             sys.stderr = save_stderr
 
         if new_exception_flag :
-            print("    exception - classif_id:", classif_id)
-            print("        type: %s, err: %s" % (exc_type[:20], exc_msg[:60]))
+            print("- exception - classif_id:", classif_id)
+            print("    type: %s" % (exc_type[:70]))
+            print("    err: %s" % (exc_msg[:71]))
 
         cumulate_acc += accuracy
         acc_list.append(accuracy)
@@ -1963,6 +1965,8 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
 
             # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # Translate numerical elements
+
             # translate_dict = None
             translate_dict = {0:'a', 1:'b', 2:'c', 3:'d', 4:'e'}
             new_proc_data = TransformTblTranslateElem(proc_train_data, translate_dict)

@@ -34,6 +34,7 @@ def GetSelClassifierListSk() :
     import sklearn.tree
 
     classifier_lst = [
+                        # First term is classifier, second: alias name/id
                         [sklearn.calibration.CalibratedClassifierCV(), None],
                         [sklearn.discriminant_analysis.LinearDiscriminantAnalysis(), None],
                         [sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis(), None],
@@ -81,15 +82,16 @@ def GetSelClassifierListSk() :
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def GetClassifierListExtra() :
 
+    import sklearn.neighbors
     # import deodel
     # import deodel2
-    # import sklearn.neighbors
 
     classifier_lst = [  
-                        # [sklearn.neighbors.KNeighborsClassifier(n_neighbors=1), None],
+                        # First term is classifier, second: alias name/id
+                        [sklearn.neighbors.KNeighborsClassifier(n_neighbors=1), None],
                         # [deodel.DeodataDelangaClassifier(), None],
                         # [deodel2.DeodelSecond(), None],
-                        [predirank.RandPredictor({'rand_seed': 42}), 'Random Baseline'],
+                        [predirank.RandPredictor({'rand_seed': 42}), '<<< Random Baseline >>>'],
     ]
     return classifier_lst
 
@@ -97,6 +99,7 @@ def GetClassifierListExtra() :
 def GetCsvDataList() :
 
     csv_file_lst = [    
+        # First term is file name, second: index of target (-1/last by default)
         ["data/basic-abalone-sex.csv"],
         ["data/basic-adult-reduced.csv"],
         ["data/basic-breast-cancer-wisconsin.csv"],
