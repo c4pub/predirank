@@ -34,6 +34,10 @@ import pandas as pd
 # > C4pUseCommon - Begin
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+def GetVersion() :
+    return "v1.0.8"
+
+
 class C4pUseCommon :
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1799,10 +1803,11 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     random.seed(random_seed)
+    str_vers = GetVersion()
 
     if display_flag: print("- - - - - - - - - ")
     if display_flag: print("- - - - - - - - - ")
-    if display_flag: print("- - BatchCsvAccuracyTest")
+    if display_flag: print("- - BatchCsvAccuracyTest (%s) - begin"%(str_vers))
     if display_flag: print("- - - - - - - - - ")
     if display_flag: print("- - - - batch average accuracy test")
     if display_flag: print()
@@ -1811,7 +1816,6 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: print("- - - - test_fraction:", test_fraction)
     if display_flag: print("- - - - data_process_mode:", data_process_mode)
     if display_flag: print()
-
 
     if display_flag: print("- - - - - - array_limit_row_max:", array_limit_row_max)
     if display_flag: print("- - - - - - array_limit_row_min:", array_limit_row_min)
@@ -2146,6 +2150,8 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: print("    avg_stdev:", avg_stdev)
     if display_flag: print()
     if display_flag: C4pUseCommon.SepLine2()
+    if display_flag: print()
+    if display_flag: print("- - BatchCsvAccuracyTest (%s) - end"%(str_vers))
     if display_flag: print()
 
     # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
