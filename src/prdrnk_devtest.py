@@ -86,7 +86,7 @@ def GetClassifierListExtra() :
     # import deodel
     # import deodel2
 
-    classifier_lst = [  
+    classifier_lst = [
                         # First term is classifier, second: alias name/id
                         [sklearn.neighbors.KNeighborsClassifier(n_neighbors=1), None],
                         # [deodel.DeodataDelangaClassifier(), None],
@@ -98,7 +98,7 @@ def GetClassifierListExtra() :
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def GetCsvDataList() :
 
-    csv_file_lst = [    
+    csv_file_lst = [
         # First term is file name, second: index of target (-1/last by default)
         ["data/basic-abalone-sex.csv"],
         ["data/basic-adult-reduced.csv"],
@@ -282,6 +282,7 @@ def predirank_devtest() :
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     array_limit_row_max = 25
     array_limit_row_min = 12
+    array_limit_col_max = 30
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -292,9 +293,10 @@ def predirank_devtest() :
     print("- - - - - - - - - - - - - - - - - - ")
     print()
 
-    ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, 
-                                    iter_no, random_seed, test_fraction, 
-                                    data_process_mode, array_limit_row_max, array_limit_row_min)
+    ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location,
+                                    iter_no, random_seed, test_fraction,
+                                    data_process_mode, array_limit_row_max,
+                                    array_limit_row_min, array_limit_col_max)
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     data_process_mode = 'categ_sim_a'
@@ -304,9 +306,10 @@ def predirank_devtest() :
     print("- - - - - - - - - - - - - - - - - - ")
     print()
 
-    ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, 
-                                    iter_no, random_seed, test_fraction, 
-                                    data_process_mode, array_limit_row_max, array_limit_row_min)
+    ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location,
+                                    iter_no, random_seed, test_fraction,
+                                    data_process_mode, array_limit_row_max,
+                                    array_limit_row_min, array_limit_col_max)
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     data_process_mode = 'categ_sim_b'
@@ -316,9 +319,10 @@ def predirank_devtest() :
     print("- - - - - - - - - - - - - - - - - - ")
     print()
 
-    ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, 
-                                    iter_no, random_seed, test_fraction, 
-                                    data_process_mode, array_limit_row_max, array_limit_row_min)
+    ret_data = predirank.BatchCsvAccuracyTest(predictor_list, file_data_list, data_location,
+                                    iter_no, random_seed, test_fraction,
+                                    data_process_mode, array_limit_row_max,
+                                    array_limit_row_min, array_limit_col_max)
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     print()

@@ -35,7 +35,7 @@ import pandas as pd
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 def GetVersion() :
-    return "v1.0.8"
+    return "v1.1.1"
 
 
 class C4pUseCommon :
@@ -279,18 +279,18 @@ class C4pTblUtil :
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
     def MatrixTranspose( in_array ) :
-        if in_array == [] : return []
-        if not isinstance(in_array[0], list) :
-            transp_data = list(in_array)
+        list_array = C4pTblUtil.ListDataConvert(in_array)
+        if list_array == [] : return []
+        if not isinstance(list_array[0], list) :
+            transp_data = list(list_array)
         else :
             transp_data = []
-            col_no = len(in_array[0])
+            col_no = len(list_array[0])
             for crt_idx_col in range(col_no) :
-                crt_vect = C4pTblUtil.GetCol( in_array, crt_idx_col )
+                crt_vect = C4pTblUtil.GetCol( list_array, crt_idx_col )
                 transp_data.append(crt_vect)
         ret_item = transp_data
         return(ret_item)
-
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
@@ -338,10 +338,8 @@ class C4pTblUtil :
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @staticmethod
-    def ListDataConvert(in_data) :
-
+    def InternalListConvert(in_data) :
         if (isinstance(in_data, list)) :
-            # check whether is a one column array
             lst_data = in_data.copy()
         elif (isinstance(in_data, np.ndarray)) :
             lst_data = in_data.tolist()
@@ -352,11 +350,30 @@ class C4pTblUtil :
         elif (isinstance(in_data, pd.core.series.Series)) :
             lst_data = in_data.values.tolist()
         else :
-            lst_data = None
+            lst_data = in_data
 
         return lst_data
 
-
+    # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    @staticmethod
+    def ListDataConvert(in_data) :
+        if (isinstance(in_data, list)) :
+            # check whether rows are also lists
+            len_data = len(in_data)
+            if len_data > 0 :
+                first_row = in_data[0]
+                if (isinstance(first_row, list)) :
+                    lst_data = in_data.copy()
+                else :
+                    lst_data = []
+                    for crt_row in in_data :
+                        new_row = C4pTblUtil.InternalListConvert(crt_row)
+                        lst_data.append(new_row)
+            else :
+                lst_data = []
+        else :
+            lst_data = C4pTblUtil.InternalListConvert(in_data)
+        return lst_data
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1179,7 +1196,6 @@ def SelectiveOneHotProc(in_vector, in_top_no) :
             one_hot_list = []
             for crt_label_idx in range(label_no) :
                 one_hot_list.append([])
-            
             for crt_idx in range(vect_len) :
                 crt_elem = in_vector[crt_idx]
                 for crt_label_idx in range(label_no) :
@@ -1257,7 +1273,6 @@ def RegularizeListTbl(in_list_tbl) :
             crt_len = len(crt_row)
             if crt_len > max_col_no :
                 max_col_no = crt_len
-        
     regular_tbl = []
     for crt_row in in_list_tbl :
         if isinstance(crt_row, list) :
@@ -1320,7 +1335,6 @@ def RetrieveCsvTbl(in_csv, in_head_first = None) :
     else :
         head_start_row = in_head_first
     list_csv = list_reg_csv[head_start_row:]
-    
     return list_csv, head_start_row
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1342,19 +1356,14 @@ def TransformTblOneHotEncoding(in_data_tbl, in_max_onehot = None) :
     if in_max_onehot == None :
         in_max_onehot = 4
 
-    if (isinstance(in_data_tbl, np.ndarray)) :
-        tbl_data = in_data_tbl.tolist()
-    elif (isinstance(in_data_tbl, pd.core.arrays.PandasArray)) :
-        tbl_data = in_data_tbl.tolist()
-    else :
-        tbl_data = in_data_tbl[:]
-
+    tbl_data = C4pTblUtil.ListDataConvert(in_data_tbl)
     onehot_tbl, insert_list = GetConvertMixToNumTbl(tbl_data, in_max_onehot)
     return onehot_tbl, insert_list
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def TransformTblDataSizeLimit(in_data_attr, in_data_targ, in_data_limit_row_max = 0,
-                                in_data_limit_row_min = 0, in_rand_seed = 42 ) :
+                                in_data_limit_row_min = 0, in_data_limit_col_max = 0,
+                                in_rand_seed = 42 ) :
 
     crt_data_attr = in_data_attr[:]
     crt_data_targ = in_data_targ[:]
@@ -1362,8 +1371,11 @@ def TransformTblDataSizeLimit(in_data_attr, in_data_targ, in_data_limit_row_max 
     attr_no_row = len(crt_data_attr)
     attr_no_col = len(crt_data_attr[0])
 
+    new_attr_data = crt_data_attr
+    new_y_data = crt_data_targ
+
     if in_data_limit_row_min > 0 :
-        if attr_no_row < in_data_limit_row_min : 
+        if attr_no_row < in_data_limit_row_min :
             # dataset is too small, multiply it
             augment_factor = int((in_data_limit_row_min * 1.0) / attr_no_row) + 1
             augment_data_attr = crt_data_attr * augment_factor
@@ -1371,9 +1383,11 @@ def TransformTblDataSizeLimit(in_data_attr, in_data_targ, in_data_limit_row_max 
             crt_data_attr = augment_data_attr[:]
             crt_data_targ = augment_targ_attr[:]
             attr_no_row *= augment_factor
+            new_attr_data = crt_data_attr
+            new_y_data = crt_data_targ
 
     if in_data_limit_row_max > 0 :
-        if attr_no_row > in_data_limit_row_min : 
+        if attr_no_row > in_data_limit_row_min :
             if attr_no_row > in_data_limit_row_max :
                 # need to reduce the data set
                 # in_rand_seed = 42
@@ -1381,11 +1395,25 @@ def TransformTblDataSizeLimit(in_data_attr, in_data_targ, in_data_limit_row_max 
                 reduced_row_no = int(reduction_ratio * attr_no_row)
                 if ( reduced_row_no > in_data_limit_row_min
                      and reduced_row_no < attr_no_row ) :
-                    new_attr_data = RandomShrinkNpTbl( crt_data_attr, reduced_row_no, in_rand_seed )
-                    new_y_data = RandomShrinkNpTbl( crt_data_targ, reduced_row_no, in_rand_seed )
-                    return new_attr_data, new_y_data
+                    new_attr_data = RandomShrinkTbl( crt_data_attr, reduced_row_no, in_rand_seed )
+                    new_y_data = RandomShrinkTbl( crt_data_targ, reduced_row_no, in_rand_seed )
+                    crt_data_attr = new_attr_data
+                    crt_data_targ = new_y_data
 
-    return crt_data_attr, crt_data_targ
+    if in_data_limit_col_max > 0 :
+        if attr_no_col > 0 :
+            if attr_no_col > in_data_limit_col_max :
+                # need to reduce the data set
+                # in_rand_seed = 42
+                reduction_ratio = in_data_limit_col_max / (1.0 * attr_no_col)
+                reduced_col_no = int(reduction_ratio * attr_no_col)
+                if ( reduced_col_no > 0
+                     and reduced_col_no < attr_no_col ) :
+                    transp_attr_data = C4pTblUtil.MatrixTranspose(crt_data_attr)
+                    shrink_attr_data = RandomShrinkTbl( transp_attr_data, reduced_col_no, in_rand_seed )
+                    new_attr_data = C4pTblUtil.MatrixTranspose(shrink_attr_data)
+
+    return new_attr_data, new_y_data
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1469,10 +1497,10 @@ def TransformTblDiscretize( in_tbl_data, in_bin_no ) :
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def RandomShrinkNpTbl(in_np_data, in_reduced_no, in_random_seed = None) :
+def RandomShrinkTbl(in_large_data, in_reduced_no, in_random_seed = None) :
 
     out_data = []
-    row_no = len(in_np_data)
+    row_no = len(in_large_data)
     n_rows_to_remove = row_no - in_reduced_no
 
     if n_rows_to_remove > 0 :
@@ -1480,10 +1508,11 @@ def RandomShrinkNpTbl(in_np_data, in_reduced_no, in_random_seed = None) :
             np.random.seed(in_random_seed)  # Set the random seed
         indices_to_remove = list(np.random.choice(row_no, size=n_rows_to_remove, replace=False))
         indices_to_remove.sort(reverse=True)
-        new_data = np.delete(in_np_data, indices_to_remove, axis=0)
-        return new_data
+        new_data = np.delete(in_large_data, indices_to_remove, axis=0)
+        new_list_data = C4pTblUtil.ListDataConvert(new_data)
+        return new_list_data
     else :
-        return in_np_data
+        return in_large_data
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1602,7 +1631,7 @@ def ExecClassifAccuracyTest(x_data, y_data, classifier_lst, iter_no = 1, random_
     ref_time = time.time()
     test_tbl = []
 
-    for crt_classif_entry in classifier_lst : 
+    for crt_classif_entry in classifier_lst :
         if crt_classif_entry[1] == None :
             classif_id = str(crt_classif_entry[0])
         else :
@@ -1699,18 +1728,19 @@ def BatchClassifRankAccTest(x_data, y_data, classifier_lst, iter_no = 1, random_
 
     if display_flag: C4pUseCommon.CrtTimeStamp()
     if display_flag: print("- - - - - - - - - - - - ")
-    classif_tbl = ExecClassifAccuracyTest(x_data, y_data, classifier_lst, 
-                                        iter_no, random_seed, test_fraction, display_flag)
+    classif_tbl = ExecClassifAccuracyTest(x_data, y_data, classifier_lst,
+                                          iter_no, random_seed, test_fraction,
+                                          display_flag)
     classif_no = len(classifier_lst)
     acc_class_iter_list = []
     for crt_row in classif_tbl :
         crt_extra_info = crt_row[2]
         acc_class_iter_list.append(crt_extra_info[1])
 
-    rank_class_list = ScoreRankTbl(acc_class_iter_list, reverse_order = False)    
+    rank_class_list = ScoreRankTbl(acc_class_iter_list, reverse_order = False)
     if display_flag: print("- - - - - - - - - - - - ")
     test_tbl = []
-    for crt_idx in range(classif_no) : 
+    for crt_idx in range(classif_no) :
         crt_classif_entry = classifier_lst[crt_idx]
         if crt_classif_entry[1] == None :
             classif_id = str(crt_classif_entry[0])
@@ -1778,10 +1808,10 @@ def TblSampleDisplay(table_list, display_flag = True) :
 
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no = 3, 
+def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no = 3,
                             random_seed = 42, test_fraction = 0.5, data_process_mode = 'numeric',
-                            array_limit_row_max = 10000, array_limit_row_min = 12, 
-                            display_flag = True) :
+                            array_limit_row_max = 10000, array_limit_row_min = 12,
+                            array_limit_col_max = 0, display_flag = True) :
 
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # >- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1819,6 +1849,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
 
     if display_flag: print("- - - - - - array_limit_row_max:", array_limit_row_max)
     if display_flag: print("- - - - - - array_limit_row_min:", array_limit_row_min)
+    if display_flag: print("- - - - - - array_limit_col_max:", array_limit_col_max)
     if display_flag: print()
 
     agg_dataset_tbl = []
@@ -1844,7 +1875,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: print("")
     if display_flag: RowListDisplay(data_set_lst)
 
-    for crt_idx in range(dataset_no) : 
+    for crt_idx in range(dataset_no) :
         crt_data_set = data_set_lst[crt_idx]
         desc_name = crt_data_set[0]
         if display_flag: print("- - - - - - - - - ")
@@ -1858,9 +1889,9 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         input_max_onehot = entry_param_list[2]
         input_head_first = entry_param_list[3]
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
         ret_data = RetrieveCsvTbl(
-                                    input_csv, 
+                                    input_csv,
                                     input_head_first,
                                    )
         input_train_data, insput_start_row = ret_data
@@ -1878,23 +1909,23 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
 
         if display_flag: print("- - - data sample:")
         TblSampleDisplay(input_train_data, display_flag)
-       
+
         if display_flag: print("- - - - - - - - - ")
         if display_flag: print()
 
         input_elem_no = input_no_row * input_no_col
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
         ret_data = TblTargetExtract(
-                                    input_train_data, 
+                                    input_train_data,
                                     input_targ_idx,
                                    )
         y_target, attr_data_tbl = ret_data
         if display_flag: print("- - - data processing - target extracted")
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
         ret_data = TransformTblOneHotEncoding(
-                                    attr_data_tbl, 
+                                    attr_data_tbl,
                                     input_max_onehot,
                                    )
         proc_train_data, insert_list = ret_data
@@ -1906,14 +1937,20 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             if display_flag: print(" Error - inconsistent processing")
             return None
 
+        onehot_no_row = proc_no_row
+        onehot_no_col = proc_no_col
+
         if display_flag: print("- - - data processing - one-hot encoded")
-        if display_flag: print("- - - - - - proc_no_row:", proc_no_row)
-        if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
+        if display_flag: print("- - - - - - onehot_no_row:", onehot_no_row)
+        if display_flag: print("- - - - - - onehot_no_col:", onehot_no_col)
 
         # if display_flag: print("- - - proc_train_data:")
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        ret_data = TransformTblDataSizeLimit(proc_train_data, y_target, array_limit_row_max, array_limit_row_min)
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        ret_data = TransformTblDataSizeLimit(proc_train_data, y_target,
+                        array_limit_row_max, array_limit_row_min,
+                        array_limit_col_max)
+
         proc_train_data, y_target = ret_data
 
         proc_no_row = len(proc_train_data)
@@ -1923,17 +1960,24 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
         if display_flag: print("- - - - - - proc_no_row:", proc_no_row)
         if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
 
-        if proc_no_row == input_no_row :
-            if display_flag: print("- - - data unchanged")
-        elif proc_no_row < input_no_row :
-            if display_flag: print("- - - data reduced")
+        if proc_no_row == onehot_no_row :
+            if display_flag: print("- - - data row number unchanged")
+        elif proc_no_row < onehot_no_row :
+            if display_flag: print("- - - data row number reduced")
         else :
-            if display_flag: print("- - - data augmented")
+            if display_flag: print("- - - data row number augmented")
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        if (proc_no_col) == onehot_no_col :
+            if display_flag: print("- - - data col number unchanged")
+        elif (proc_no_col) < onehot_no_col :
+            if display_flag: print("- - - data col number reduced")
+        else :
+            if display_flag: print("- - - data col number augmented")
+
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if data_process_mode == 'categ_sim_a' :
 
-            # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
             # Simulate categorical input by discretizing numbers into 0 and 1
 
             discretize_param = 2
@@ -1948,11 +1992,11 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             if display_flag: print("- - - - - - proc_no_row:", proc_no_row)
             if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
 
-            # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         elif data_process_mode == 'categ_sim_b' :
 
-            # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
             # Simulate categorical input by discretizing numbers into four symbols
             # then transforming them back into numbers using one-hot encoding
 
@@ -1968,7 +2012,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             if display_flag: print("- - - - - - proc_no_row:", proc_no_row)
             if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
 
-            # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
             # Translate numerical elements
 
             # translate_dict = None
@@ -1978,9 +2022,9 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
 
             if display_flag: print("- - - data processing - element translation")
 
-            # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
             ret_data = TransformTblOneHotEncoding(
-                                        proc_train_data, 
+                                        proc_train_data,
                                         5,
                                        )
             proc_train_data, insert_list = ret_data
@@ -1989,30 +2033,30 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
             proc_no_col = len(proc_train_data[0])
 
             if display_flag: print("- - - data processing - one-hot encoded")
-            # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+            # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if display_flag: print("- - - data processing - finished")
         if display_flag: print("- - - - - - proc_no_row:", proc_no_row)
         if display_flag: print("- - - - - - proc_no_col:", proc_no_col)
         if display_flag: print("- - - data sample:")
         TblSampleDisplay(proc_train_data, display_flag)
 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         if display_flag: print()
         if display_flag: C4pUseCommon.SepLine2()
 
-        test_tbl = BatchClassifRankAccTest(proc_train_data, 
-                                            y_target, classifier_lst, 
-                                            iter_no = iter_no, 
-                                            random_seed = random_seed, 
+        test_tbl = BatchClassifRankAccTest(proc_train_data,
+                                            y_target, classifier_lst,
+                                            iter_no = iter_no,
+                                            random_seed = random_seed,
                                             test_fraction = test_fraction,
                                             display_flag = display_flag)
 
         # aggregate rank data
-        for crt_idx in range(classif_no) : 
+        for crt_idx in range(classif_no) :
             crt_agg_row = agg_dataset_tbl[crt_idx]
             crt_test_row = test_tbl[crt_idx]
             row_avg_rank = crt_test_row[0]
@@ -2068,7 +2112,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     agg_rank_classif = sorted(unsorted_rank_list, key=lambda row: row[0])
     agg_rank_classif.reverse()
 
-    # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if display_flag: C4pUseCommon.SepLine2()
     if display_flag: print("- - - - aggregate accuracy")
     if display_flag: print("")
@@ -2110,7 +2154,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: C4pUseCommon.SepLine2()
     if display_flag: print()
 
-    # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if display_flag: C4pUseCommon.SepLine2()
     if display_flag: print("- - - - aggregate rank score")
     if display_flag: print("")
@@ -2154,7 +2198,7 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: print("- - BatchCsvAccuracyTest (%s) - end"%(str_vers))
     if display_flag: print()
 
-    # > - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if display_flag: C4pUseCommon.SepLine2()
     if display_flag: print()
 
