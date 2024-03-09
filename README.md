@@ -4,7 +4,7 @@
 
 This project ranks classifiers based on their accuracy across a selection of datasets. The primary focus is on classifiers from the sklearn/scikit-learn library and their application to popular tabular datasets. Sklearn classifiers require numerical data for operation. Consequently, categorical data must be 'numerized', or converted into numerical form using one-hot encoding.
 
-The resulting rankings are only indicative; there can't be an absolute ranking. One classifier may perform better than others depending on the dataset/problem domain. The tool has many limitations, most of which are out of necessity to keep the task manageable. Among them:
+The resulting leaderboard is only indicative; there can't be an absolute ranking. One classifier may perform better than others depending on the dataset/problem domain. The tool has many limitations, most of which are out of necessity to keep the task manageable. Among them:
 
 - The classifiers are used with their default parameters.
 - The size of the datasets is limited; those that are too large are randomly truncated to save space and execution time.
@@ -25,6 +25,9 @@ The tool transforms tabular data (CSV files) into a numerical format that is com
 
 * Run the Jupyter notebooks to see the classifiers in action
 * Use `prdrnk_devtest.py` for a demo run in a console. Needs to be run from the `/src` directory of the project.
+
+The list of datasets and classifiers can be customized by editing the provided examples.
+Function BatchCsvAccuracyTest() takes as parameters the lists of datasets and classifiers.
 
 ## Project Structure
 
@@ -49,7 +52,6 @@ Results of the classifier rankings are presented in the Jupyter notebooks.
 The following ranking resulted in a run performed on March 5, 2024 (predirank_test_numerized.ipynb):
 
 ```
-
 --------------------------------------------------------------------------------
 - - - - aggregate rank score
 
@@ -95,5 +97,4 @@ no  rank aggregate avg  stddev    excpt   classifier
 38  0.05260025062656641 0.110408> 381     MultinomialNB()
 39  0.04426691729323308 0.101659> 403     RadiusNeighborsClassifier()
 --------------------------------------------------------------------------------
-
 ```
