@@ -2108,8 +2108,8 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
 
     if display_flag: print("- - - - - - - - - ")
     if display_flag: print()
-    # agg_rank_classif = reversed(sorted(unsorted_rank_list, key=lambda row: row[0]))
-    agg_rank_classif = sorted(unsorted_rank_list, key=lambda row: row[0])
+
+    agg_rank_classif = sorted(unsorted_rank_list, key=lambda row: row[2])
     agg_rank_classif.reverse()
 
     # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2153,6 +2153,11 @@ def BatchCsvAccuracyTest(predictor_list, file_data_list, data_location, iter_no 
     if display_flag: print()
     if display_flag: C4pUseCommon.SepLine2()
     if display_flag: print()
+
+    # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    agg_rank_classif = sorted(unsorted_rank_list, key=lambda row: row[0])
+    agg_rank_classif.reverse()
 
     # > - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if display_flag: C4pUseCommon.SepLine2()
